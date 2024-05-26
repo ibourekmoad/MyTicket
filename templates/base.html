@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MyTicket{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+
+
+        .sidebar-expanded {
+            width: 200px;
+        }
+
+        .sidebar-collapsed {
+            width: 50px;
+        }
+
+        .sidebar-collapsed .flex-1,
+        .sidebar-collapsed nav,
+        .sidebar-collapsed h2,
+        .sidebar-collapsed ul,
+        .sidebar-collapsed .ml-2 {
+            display: none;
+        }
+
+        .sidebar-collapsed .flex {
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex h-screen">
+
+<!-- Side Navigation Panel -->
+<div id="sidebar"
+     class="sidebar-expanded bg-blue-500 text-white flex flex-col transition-width duration-300 relative h-screen">
+    <div class="flex items-center justify-center h-16">
+        <img src="{% static 'images/myticket.jpg' %}" alt="MyTicket Logo" class="w-10 h-10">
+    </div>
+    <nav class="flex-1 px-2">
+        <div class="mt-2">
+            <h2 class="text-sm font-semibold uppercase text-gray-200 border-b border-gray-300 pb-1">Tickets</h2>
+            <ul>
+                {% if request.user.is_customer %}
+                    <li class="hover:bg-blue-600">
+                        <a href="{% url 'new-ticket' %}" class="flex items-center p-3">
+                            <span class="ml-2 text-sm">New Ticket</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="hover:bg-blue-600">
+                    <a href="{% url 'view-ticket' %}" class="flex items-center p-3">
+                        <span class="ml-2 text-sm">View Tickets</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- Add more sections here -->
+    </nav>
+    <div class="flex items-center justify-center h-16 cursor-pointer absolute bottom-0 w-full"
+         onclick="toggleSidebar()">
+        <img src="{% static 'images/menu.png' %}" alt="Menu" class="w-6 h-6">
+    </div>
+</div>
+
+
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col">
+    <!-- Top Navigation Bar -->
+    <header class="bg-white shadow-md flex items-center justify-between px-4 py-2">
+        <div class="flex items-center">
+            <h1 class="text-xl font-bold text-gray-800"><a href="{% url 'dashboard' %}">MyTicket</a></h1>
+        </div>
+        <div class="flex items-center space-x-3">
+            <div class="relative">
+                <img src="{% static 'images/notification.png' %}" alt="Notifications" class="w-6 h-6 cursor-pointer">
+                <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-600"></span>
+            </div>
+            <img src="{% static 'images/settings.png' %}" alt="Settings" class="w-6 h-6 cursor-pointer">
+            <div class="flex items-center">
+                <img src="{% static 'images/avatar.jpg' %}" alt="User Avatar" class="w-6 h-6 rounded-full">
+                <span class="ml-2 text-sm text-gray-800">{{ request.user.username }}</span>
+            </div>
+            <button class="ml-3 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-sm focus:outline-none">
+                <a href="{% url 'logout' %}">Logout</a>
+            </button>
+        </div>
+    </header>
+
+
+    <!-- Page Content -->
+    <main class="flex-1 p-6 bg-gray-100">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar.classList.contains('sidebar-expanded')) {
+            sidebar.classList.remove('sidebar-expanded');
+            sidebar.classList.add('sidebar-collapsed');
+        } else {
+            sidebar.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('sidebar-expanded');
+        }
+    }
+</script>
+</body>
+</html>
